@@ -31,6 +31,7 @@ echo "Using $($PYTHON --version) and Node.js $(node --version)"
 
 # 1. Setup Python Venv
 echo "Setting up Python virtual environment in backend/.venv..."
+rm -rf backend/.venv
 "$PYTHON" -m venv backend/.venv
 backend/.venv/bin/pip install --upgrade pip
 backend/.venv/bin/pip install -r backend/requirements.txt
