@@ -1,6 +1,6 @@
-# Nexonic IPTV v2: architecture
+# Nexonic TV Server: architecture
 
-Nexonic IPTV v2 is a self-hosted web app. One Python process serves the API, the Xtream Codes endpoints and the built React app on a single port.
+Nexonic TV Server is a self-hosted web app. One Python process serves the API, the Xtream Codes endpoints and the built React app on a single port.
 
 ```
  Smart TV app (Xtream / M3U)        Browser (React app)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""End-to-end check against a running Nexonic IPTV v2 server (standard library only).
+"""End-to-end check against a running Nexonic TV Server server (standard library only).
 
 Usage:  python3 scripts/smoke_test.py [http://127.0.0.1:8000]
 

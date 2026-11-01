@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Nexonic IPTV v2 — Local Setup Script
+# Nexonic TV Server — Local Setup Script
 # ==============================================================================
 
 set -e
@@ -8,7 +8,7 @@ set -e
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$PROJECT_ROOT"
 
-echo "Setting up Nexonic IPTV v2 on local machine..."
+echo "Setting up Nexonic TV Server on local machine..."
 
 # 0. Check requirements
 PYTHON="${PYTHON:-}"

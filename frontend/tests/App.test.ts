@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 
-describe('Nexonic IPTV v2 Frontend Tests', () => {
-  it('application name is Nexonic IPTV v2', () => {
-    const appName = 'Nexonic IPTV v2';
-    expect(appName).toBe('Nexonic IPTV v2');
+describe('Nexonic TV Server Frontend Tests', () => {
+  it('application name is Nexonic TV Server', () => {
+    const appName = 'Nexonic TV Server';
+    expect(appName).toBe('Nexonic TV Server');
   });
 
   it('validates verification status logic', () => {

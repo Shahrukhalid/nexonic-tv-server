@@ -1,10 +1,10 @@
-# Watching Nexonic IPTV v2 on a Smart TV
+# Watching Nexonic TV Server on a Smart TV
 
-Nexonic IPTV v2 includes an Xtream Codes compatible server, so most IPTV player apps on LG, Samsung, Android TV, Fire TV and Apple TV can use it.
+Nexonic TV Server includes an Xtream Codes compatible server, so most IPTV player apps on LG, Samsung, Android TV, Fire TV and Apple TV can use it.
 
 ## 1. Share the server on your home network
 
-By default only the computer running Nexonic IPTV v2 can reach it. In the project folder:
+By default only the computer running Nexonic TV Server can reach it. In the project folder:
 
 ```bash
 cp .env.example .env      # if you haven't already

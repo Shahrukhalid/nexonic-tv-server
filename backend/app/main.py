@@ -41,7 +41,7 @@ async def _initial_import():
 
 app = FastAPI(
     title=APP_NAME,
-    description="Nexonic IPTV v2: a self-hosted player and Xtream Codes server for free, legal IPTV channels",
+    description="Nexonic TV Server: a self-hosted player and Xtream Codes server for free, legal IPTV channels",
     version=APP_VERSION,
     lifespan=lifespan
 )

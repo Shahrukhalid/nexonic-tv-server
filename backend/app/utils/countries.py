@@ -1,4 +1,4 @@
-"""ISO Country mapping and flag helper for Nexonic IPTV v2."""
+"""ISO Country mapping and flag helper for Nexonic TV Server."""
 
 COUNTRY_DATA = {
     "AF": {"name": "Afghanistan", "flag": "🇦🇫"},

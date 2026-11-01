@@ -20,7 +20,7 @@ REPORTS_DIR = LOCAL_DATA_DIR / "reports"
 for p in [DATABASE_DIR, PLAYLISTS_DIR, EPG_DIR, CACHE_DIR, LOGOS_DIR, BACKUPS_DIR, REPORTS_DIR]:
     p.mkdir(parents=True, exist_ok=True)
 
-APP_NAME = "Nexonic IPTV v2"
+APP_NAME = "Nexonic TV Server"
 APP_VERSION = "2.0.0"
 
 # Networking. Default is this computer only; set NEXONIC_HOST=0.0.0.0 to let devices on your home network

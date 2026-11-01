@@ -1,6 +1,6 @@
-# Nexonic IPTV v2
+# Nexonic TV Server
 
-**Website: <https://shahrukhalid.github.io/nexonic-iptv-v2/>**
+**Website: <https://shahrukhalid.github.io/nexonic-tv-server/>** · *Formerly named Nexonic IPTV v2.*
 
 **A self-hosted IPTV player and Xtream Codes server for free, legal TV channels. Runs on your own computer, verifies every stream, and lets you watch on a Smart TV.**
 
@@ -9,9 +9,9 @@
 ![React](https://img.shields.io/badge/React-18-61DAFB)
 ![FastAPI](https://img.shields.io/badge/FastAPI-async-009688)
 
-<p align="center"><img src="docs/demo.gif" alt="Nexonic IPTV v2 overview: self-hosted IPTV player and Xtream Codes server" width="820"></p>
+<p align="center"><img src="docs/demo.gif" alt="Nexonic TV Server overview: self-hosted IPTV player and Xtream Codes server" width="820"></p>
 
-Nexonic IPTV v2 is the desktop and Smart TV companion to [Nexonic IPTV](https://github.com/Shahrukhalid/nexonic-iptv), the curated list of official free-to-air channels. Run it on your computer to browse thousands of free channels by country, category or language, see which streams are working right now, and send them to IPTV Smarters, TiviMate or any other Xtream Codes player.
+Nexonic TV Server is the desktop and Smart TV companion to [Nexonic IPTV](https://github.com/Shahrukhalid/nexonic-iptv), the curated list of official free-to-air channels. Run it on your computer to browse thousands of free channels by country, category or language, see which streams are working right now, and send them to IPTV Smarters, TiviMate or any other Xtream Codes player.
 
 ---
 
@@ -36,7 +36,7 @@ Nexonic IPTV v2 is the desktop and Smart TV companion to [Nexonic IPTV](https://
 
 ## What this project is not
 
-Nexonic IPTV v2 does not host any streams. It does not unlock paid channels, bypass DRM or get around regional restrictions, and it is not a subscription service. The default sources are [Nexonic IPTV](https://github.com/Shahrukhalid/nexonic-iptv) (official broadcaster streams) and the public [iptv-org](https://github.com/iptv-org/iptv) playlists. Only watch channels you are entitled to in your country.
+Nexonic TV Server does not host any streams. It does not unlock paid channels, bypass DRM or get around regional restrictions, and it is not a subscription service. The default sources are [Nexonic IPTV](https://github.com/Shahrukhalid/nexonic-iptv) (official broadcaster streams) and the public [iptv-org](https://github.com/iptv-org/iptv) playlists. Only watch channels you are entitled to in your country.
 
 ---
 
@@ -45,8 +45,8 @@ Nexonic IPTV v2 does not host any streams. It does not unlock paid channels, byp
 Requirements: **Python 3.10+**, **Node.js 18+**, and optionally **ffmpeg** (for `ffprobe` checks).
 
 ```bash
-git clone https://github.com/Shahrukhalid/nexonic-iptv-v2.git
-cd nexonic-iptv-v2
+git clone https://github.com/Shahrukhalid/nexonic-tv-server.git
+cd nexonic-tv-server
 bash scripts/setup.sh   # creates backend/.venv, installs packages, builds the web app
 bash scripts/start.sh   # starts the server
 ```

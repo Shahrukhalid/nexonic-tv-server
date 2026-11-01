@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Nexonic IPTV v2 — Local Startup Script (macOS / Linux)
-# Starts Nexonic IPTV v2 Engine & Web Application
+# Nexonic TV Server — Local Startup Script (macOS / Linux)
+# Starts Nexonic TV Server Engine & Web Application
 # ==============================================================================
 
 set -e
@@ -10,7 +10,7 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$PROJECT_ROOT"
 
 echo "============================================================"
-echo "                   STARTING NEXONIC IPTV V2                       "
+echo "                   STARTING NEXONIC TV SERVER                       "
 echo "        100% Local Worldwide IPTV & Xtream Codes Server     "
 echo "============================================================"
 
@@ -26,7 +26,7 @@ PORT="${NEXONIC_PORT:-8000}"
 
 mkdir -p "$PROJECT_ROOT/local-data/logs"
 
-echo "Starting Nexonic IPTV v2 server on $HOST:$PORT..."
+echo "Starting Nexonic TV Server server on $HOST:$PORT..."
 export PYTHONPATH="$PROJECT_ROOT"
 nohup "$PROJECT_ROOT/backend/.venv/bin/python" -m uvicorn backend.app.main:app --host "$HOST" --port "$PORT" > "$PROJECT_ROOT/local-data/logs/backend.log" 2>&1 &
 BACKEND_PID=$!
@@ -54,7 +54,7 @@ if [ "${NEXONIC_DEV:-0}" = "1" ]; then
 fi
 
 echo "============================================================"
-echo "Nexonic IPTV v2 is running: http://localhost:$PORT"
+echo "Nexonic TV Server is running: http://localhost:$PORT"
 if [ "$HOST" = "127.0.0.1" ]; then
   echo "Only this computer can connect. To use a Smart TV on your home"
   echo "network, set NEXONIC_HOST=0.0.0.0 in .env and restart."

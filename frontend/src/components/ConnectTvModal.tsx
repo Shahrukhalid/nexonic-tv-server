@@ -43,7 +43,7 @@ export const ConnectTvModal: React.FC<ConnectTvModalProps> = ({ isOpen, onClose 
           <div>
             <h3 className="text-xl font-bold text-white">Connect Smart TV</h3>
             <p className="text-xs text-nx-muted">
-              Stream Nexonic IPTV v2 directly on your Smart TV via Xtream Codes API or M3U Plus URL
+              Stream Nexonic TV Server directly on your Smart TV via Xtream Codes API or M3U Plus URL
             </p>
           </div>
         </div>
@@ -148,7 +148,7 @@ export const ConnectTvModal: React.FC<ConnectTvModalProps> = ({ isOpen, onClose 
                 <li>Make sure your Smart TV is connected to the same Wi-Fi / Local Network as this computer.</li>
                 <li>On your Smart TV, install <strong className="text-white">IPTV Smarters Pro</strong>, <strong className="text-white">IBO Player</strong>, <strong className="text-white">Bay TV</strong>, or <strong className="text-white">Nanomid</strong> from your TV's app store.</li>
                 <li>Select <strong className="text-white">"Add User"</strong> and choose <strong className="text-white">"Login with Xtream Codes API"</strong>.</li>
-                <li>Enter Playlist Name: <strong className="text-white">Nexonic IPTV v2</strong></li>
+                <li>Enter Playlist Name: <strong className="text-white">Nexonic TV Server</strong></li>
                 <li>Enter Server URL: <strong className="text-white font-mono">{info.server_url}</strong></li>
                 <li>Enter Username: <strong className="text-white font-mono">{info.xtream_username}</strong> and Password: <strong className="text-white font-mono">{info.xtream_password}</strong></li>
                 <li>Click <strong className="text-white">Add User / Login</strong> to load live channels, categories, and TV series on your TV!</li>

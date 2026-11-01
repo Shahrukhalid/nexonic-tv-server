@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Nexonic IPTV v2 — Automated Test Suite Runner
+# Nexonic TV Server — Automated Test Suite Runner
 # ==============================================================================
 
 set -e

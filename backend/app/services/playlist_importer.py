@@ -18,7 +18,7 @@ SERIES_KEYWORDS = [
     "24/7", "marathon", "episodes", "season", "classic tv"
 ]
 
-# Adult-oriented entries are never imported: Nexonic IPTV v2 is family-friendly by design.
+# Adult-oriented entries are never imported: Nexonic TV Server is family-friendly by design.
 ADULT_PATTERN = re.compile(
     r"(\bxxx\b|\badult(?! swim)\b|18\+|\berotic|\bnsfw\b|\bporn|\bplayboy\b|\bpenthouse\b|\bbrazzers\b|"
     r"\bhustler\b|\bsex\b|\bsexy\b|\bhentai\b|\bonlyfans\b|\bcamgirls?\b|\bnaked\b|\bnude)",

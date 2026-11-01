@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Nexonic IPTV v2 — Local Shutdown Script
+# Nexonic TV Server — Local Shutdown Script
 # ==============================================================================
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-echo "Stopping Nexonic IPTV v2 services..."
+echo "Stopping Nexonic TV Server services..."
 
 if [ -f "$PROJECT_ROOT/local-data/backend.pid" ]; then
     PID=$(cat "$PROJECT_ROOT/local-data/backend.pid")
@@ -29,4 +29,4 @@ fi
 lsof -ti:"${NEXONIC_PORT:-8000}" -sTCP:LISTEN | xargs kill 2>/dev/null || true
 lsof -ti:5173 -sTCP:LISTEN | xargs kill 2>/dev/null || true
 
-echo "Nexonic IPTV v2 stopped successfully."
+echo "Nexonic TV Server stopped successfully."

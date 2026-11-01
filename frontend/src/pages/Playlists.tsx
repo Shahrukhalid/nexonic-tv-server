@@ -63,7 +63,7 @@ export const Playlists: React.FC<PlaylistsProps> = () => {
       <div className="p-6 rounded-2xl bg-nx-surface border border-nx-border space-y-4">
         <h3 className="text-base font-bold text-white">Instant Filtered M3U Downloads</h3>
         <p className="text-xs text-nx-muted">
-          Download clean, verified M3U files generated directly from your local Nexonic IPTV v2 database:
+          Download clean, verified M3U files generated directly from your local Nexonic TV Server database:
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
@@ -159,7 +159,7 @@ export const Playlists: React.FC<PlaylistsProps> = () => {
                   required
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  placeholder="e.g. Nexonic IPTV v2 - My Favorite Channels"
+                  placeholder="e.g. Nexonic TV Server - My Favorite Channels"
                   className="w-full px-3 py-2 rounded-xl bg-nx-bg border border-nx-border text-xs text-white focus:outline-none focus:border-nx-primary"
                 />
               </div>

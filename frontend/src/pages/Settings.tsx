@@ -77,7 +77,7 @@ export const Settings: React.FC = () => {
             <span>Smart TV (Xtream Codes) login</span>
           </div>
           <p className="text-xs text-nx-muted">
-            Customize the username and password used by your Smart TV to authenticate with Nexonic IPTV v2.
+            Customize the username and password used by your Smart TV to authenticate with Nexonic TV Server.
           </p>
 
           <form onSubmit={handleSaveXtream} className="space-y-4">
@@ -194,7 +194,7 @@ export const Settings: React.FC = () => {
           <span>Local Storage & Privacy Status</span>
         </h3>
         <p className="text-xs text-nx-muted leading-relaxed">
-          Nexonic IPTV v2 is 100% locally hosted. All database rows, playlists, channel health records, and viewing history are stored on your local SSD inside <code className="text-white bg-nx-bg px-1.5 py-0.5 rounded">local-data/</code>. No analytics, tracking, or cloud sync is active.
+          Nexonic TV Server is 100% locally hosted. All database rows, playlists, channel health records, and viewing history are stored on your local SSD inside <code className="text-white bg-nx-bg px-1.5 py-0.5 rounded">local-data/</code>. No analytics, tracking, or cloud sync is active.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-2">
           <div className="p-3 rounded-xl bg-nx-bg border border-nx-border">

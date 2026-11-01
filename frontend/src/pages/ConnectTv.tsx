@@ -216,7 +216,7 @@ export const ConnectTv: React.FC = () => {
                   5
                 </div>
                 <div>
-                  <strong className="text-white block mb-0.5">Enjoy Nexonic IPTV v2 on the Big Screen!</strong>
+                  <strong className="text-white block mb-0.5">Enjoy Nexonic TV Server on the Big Screen!</strong>
                   Your categories, live worldwide television channels, EPG program guide, and TV series will instantly load directly on your Smart TV!
                 </div>
               </div>
@@ -226,9 +226,9 @@ export const ConnectTv: React.FC = () => {
       ) : (
         <div className="py-20 text-center text-nx-muted">
           {blocked
-            ? 'For your security, TV login details are only shown on the computer running Nexonic IPTV v2.'
+            ? 'For your security, TV login details are only shown on the computer running Nexonic TV Server.'
             : loadFailed
-              ? 'Could not load connection info. Check that the Nexonic IPTV v2 server is running, then reload.'
+              ? 'Could not load connection info. Check that the Nexonic TV Server server is running, then reload.'
               : 'Loading local connection info...'}
         </div>
       )}

@@ -173,7 +173,7 @@ export const Home: React.FC<HomeProps> = ({
           </h1>
 
           <p className="text-sm md:text-base text-nx-muted leading-relaxed">
-            Nexonic IPTV v2 discovers, tests, and streams worldwide television channels, Free-To-Air Dish & Satellite networks, and 24/7 TV series locally on your computer and connects seamlessly to your Smart TV via Xtream Codes.
+            Nexonic TV Server discovers, tests, and streams worldwide television channels, Free-To-Air Dish & Satellite networks, and 24/7 TV series locally on your computer and connects seamlessly to your Smart TV via Xtream Codes.
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">

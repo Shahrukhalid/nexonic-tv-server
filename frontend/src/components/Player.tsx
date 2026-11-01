@@ -169,7 +169,7 @@ export const Player: React.FC<PlayerProps> = ({ channel, onClose, onNextWorkingC
               } else {
                 hls.destroy();
                 if (channel.status === 'REGION RESTRICTED' || channel.access_restriction === 'REGION RESTRICTED') {
-                  setErrorMsg(`Geographic Restriction: This stream is restricted by the broadcaster to viewers within ${channel.country || 'their home territory'}. Nexonic IPTV v2 strictly honors regional broadcast rights and does not bypass geo-restrictions.`);
+                  setErrorMsg(`Geographic Restriction: This stream is restricted by the broadcaster to viewers within ${channel.country || 'their home territory'}. Nexonic TV Server strictly honors regional broadcast rights and does not bypass geo-restrictions.`);
                 } else {
                   setErrorMsg('Playback failed: Upstream broadcast server is offline or unreachable.');
                 }
@@ -258,7 +258,7 @@ export const Player: React.FC<PlayerProps> = ({ channel, onClose, onNextWorkingC
     return (
       <div className="w-full aspect-video bg-nx-surface rounded-2xl flex flex-col items-center justify-center border border-nx-border p-6 text-center">
         <Tv className="w-16 h-16 text-nx-muted mb-4 opacity-40 animate-pulse" />
-        <h3 className="text-xl font-bold text-white mb-2">Nexonic IPTV v2 Player</h3>
+        <h3 className="text-xl font-bold text-white mb-2">Nexonic TV Server Player</h3>
         <p className="text-nx-muted text-sm max-w-sm">
           Select any channel from the list, country explorer, or search to start streaming live TV.
         </p>
