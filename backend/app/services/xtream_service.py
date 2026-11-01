@@ -210,3 +210,57 @@ async def get_short_epg(stream_id: str | None, limit: int = 4) -> Dict[str, Any]
             "stop_timestamp": str(int(end.timestamp())),
         })
     return {"epg_listings": listings}
+
+
+def _xmltv_time(iso: str) -> str:
+    return datetime.fromisoformat(iso).strftime("%Y%m%d%H%M%S +0000")
+
+
+async def build_xmltv(hours: int = 48) -> str:
+    """The TV guide as XMLTV: every channel with a guide ID, and its programmes from now for the next `hours`."""
+    from datetime import timedelta
+    from xml.sax.saxutils import escape, quoteattr
+
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    until = (now + timedelta(hours=hours)).isoformat()
+    async with get_db() as db:
+        async with db.execute(
+            "SELECT DISTINCT epg_id, name, logo FROM channels WHERE is_adult = 0 AND epg_id IS NOT NULL AND epg_id != '' ORDER BY name"
+        ) as cur:
+            channels = await cur.fetchall()
+        ids = [c["epg_id"] for c in channels]
+        programmes = []
+        if ids:
+            marks = ",".join("?" for _ in ids)
+            async with db.execute(
+                f"SELECT * FROM epg_programs WHERE channel_epg_id IN ({marks}) AND end_time > ? AND start_time < ? "
+                "ORDER BY channel_epg_id, start_time LIMIT 50000",
+                (*ids, now.isoformat(), until),
+            ) as cur:
+                programmes = await cur.fetchall()
+
+    out = ['<?xml version="1.0" encoding="UTF-8"?>', '<!DOCTYPE tv SYSTEM "xmltv.dtd">', f"<tv generator-info-name={quoteattr(APP_NAME)}>"]
+    seen = set()
+    for c in channels:
+        if c["epg_id"] in seen:
+            continue
+        seen.add(c["epg_id"])
+        out.append(f"  <channel id={quoteattr(c['epg_id'])}>")
+        out.append(f"    <display-name>{escape(c['name'])}</display-name>")
+        if c["logo"]:
+            out.append(f"    <icon src={quoteattr(c['logo'])} />")
+        out.append("  </channel>")
+    for p in programmes:
+        try:
+            start, stop = _xmltv_time(p["start_time"]), _xmltv_time(p["end_time"])
+        except ValueError:
+            continue
+        out.append(f"  <programme start=\"{start}\" stop=\"{stop}\" channel={quoteattr(p['channel_epg_id'])}>")
+        out.append(f"    <title>{escape(p['title'] or '')}</title>")
+        if p["description"]:
+            out.append(f"    <desc>{escape(p['description'])}</desc>")
+        if p["category"]:
+            out.append(f"    <category>{escape(p['category'])}</category>")
+        out.append("  </programme>")
+    out.append("</tv>")
+    return "\n".join(out) + "\n"

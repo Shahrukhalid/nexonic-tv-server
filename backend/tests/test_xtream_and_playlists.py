@@ -78,7 +78,9 @@ def test_m3u_playlist_needs_login():
         _add_channels()
         assert "Fav News" not in client.get("/get.php", params={"username": "nexonic", "password": "nope"}).text
         ok = client.get("/get.php", params={**login, "type": "m3u_plus"})
-        assert ok.status_code == 200 and "#EXTM3U" in ok.text and "Fav News" in ok.text
+        assert ok.status_code == 200 and ok.text.startswith("#EXTM3U url-tvg=") and "Fav News" in ok.text
+        favs = client.get("/get.php", params={**login, "favourites": 1}).text
+        assert "Fav News" in favs and "Other Sport" not in favs
 
 
 def test_server_time_is_utc_without_warnings():
@@ -114,3 +116,48 @@ def test_short_epg_lists_now_and_next_for_smart_tv_apps():
         assert titles == ["Morning News", "Weather"]
         assert int(r["epg_listings"][0]["stop_timestamp"]) > int(r["epg_listings"][0]["start_timestamp"])
         assert client.get("/player_api.php", params={**login, "action": "get_short_epg", "stream_id": "abc"}).json() == {"epg_listings": []}
+
+
+def _guide_fixture():
+    from datetime import datetime, timedelta, timezone
+
+    now = datetime.now(timezone.utc).replace(tzinfo=None, microsecond=0)
+    con = sqlite3.connect(DATABASE_PATH)
+    con.execute("DELETE FROM channels")
+    con.execute("DELETE FROM epg_programs")
+    con.execute("INSERT INTO channels (name, category, stream_url, epg_id, is_favorite, custom_order) VALUES ('B & Co TV', 'News', 'https://example.com/b.m3u8', 'b.tv', 1, 1)")
+    con.execute("INSERT INTO channels (name, category, stream_url, custom_order) VALUES ('A Movies', 'Movies', 'https://example.com/a.m3u8', 2)")
+    con.execute("INSERT INTO epg_programs (channel_epg_id, title, start_time, end_time, description) VALUES ('b.tv', 'Tom <Live>', ?, ?, 'News & more')",
+                ((now - timedelta(minutes=5)).isoformat(), (now + timedelta(minutes=55)).isoformat()))
+    con.commit()
+    con.close()
+
+
+def test_xmltv_guide_for_smart_tv_apps():
+    import xml.etree.ElementTree as ET
+
+    with TestClient(app) as client:
+        login = _login(client)
+        _guide_fixture()
+        assert client.get("/xmltv.php", params={"username": "nexonic", "password": "nope"}).status_code == 401
+        root = ET.fromstring(client.get("/xmltv.php", params=login).content)
+        assert [c.findtext("display-name") for c in root.findall("channel")] == ["B & Co TV"]
+        prog = root.find("programme")
+        assert prog.get("channel") == "b.tv" and prog.findtext("title") == "Tom <Live>"
+        assert prog.get("start").endswith("+0000")
+
+
+def test_network_tuner_is_off_by_default_and_works_when_on(monkeypatch):
+    with TestClient(app) as client:
+        _guide_fixture()
+        assert client.get("/discover.json").status_code == 404
+        monkeypatch.setenv("NEXONIC_TUNER", "1")
+        d = client.get("/discover.json").json()
+        assert d["LineupURL"].endswith("/lineup.json") and d["TunerCount"] == 4
+        lineup = client.get("/lineup.json").json()
+        assert [c["GuideName"] for c in lineup] == ["B & Co TV", "A Movies"]
+        assert lineup[0]["GuideNumber"] == "1" and lineup[0]["URL"] == "https://example.com/b.m3u8"
+        assert [c["GuideName"] for c in client.get("/lineup.json", params={"favourites": 1}).json()] == ["B & Co TV"]
+        assert client.get("/lineup_status.json").json()["ScanInProgress"] == 0
+        assert b"<friendlyName>" in client.get("/device.xml").content
+        assert b"<programme" in client.get("/guide.xml").content

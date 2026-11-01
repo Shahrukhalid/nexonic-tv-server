@@ -22,6 +22,12 @@ Nexonic TV Server is the desktop and Smart TV companion to [Nexonic IPTV](https:
 - **Channel health center**: working, unstable, offline and region-restricted counts, with CSV and JSON exports.
 - **Xtream Codes API and M3U server**: `player_api.php`, `get.php` and `xmltv.php` endpoints, so Smart TV apps can log in to your own computer.
 - **TV guide (EPG)**: XMLTV import with now and next listings, also shown inside Smart TV apps.
+- **Full TV guide for players**: the playlist link tells players where the guide is, and `xmltv.php` serves the next 48
+  hours of programmes, so IPTV apps fill their guide by themselves.
+- **Favourites-only playlist**: add `&favourites=1` to the playlist link to get just your saved channels.
+- **Network TV tuner for media servers** (optional): set `NEXONIC_TUNER=1` and home media servers on your network can
+  add Nexonic TV Server as a live TV tuner (address `http://<this computer>:8000`), with numbered channels and the guide
+  at `/guide.xml`. Use `/lineup.json?favourites=1` for a favourites-only line-up.
 - **TV series channels, favourites and watch history**, all stored locally. Your favourites also appear as a
   **Favourites** group in Smart TV apps, so the remote goes straight to your saved channels.
 - **Offline library**: play video files you put in `local-data/offline_media/`.

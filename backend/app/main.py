@@ -8,7 +8,7 @@ from .database import init_db, get_db
 from .services.source_manager import seed_default_sources, get_all_sources, refresh_source
 from .services.scheduler_service import scheduler
 
-from .api import channels, sources, verification, epg, playlists, proxy, settings, xtream, offline_media
+from .api import channels, sources, verification, epg, playlists, proxy, settings, xtream, offline_media, tuner
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -69,6 +69,7 @@ app.include_router(proxy.router)
 app.include_router(settings.router)
 app.include_router(xtream.router)
 app.include_router(offline_media.router)
+app.include_router(tuner.router)
 
 @app.get("/api/health")
 async def health_check():

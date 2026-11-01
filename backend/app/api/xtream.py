@@ -1,4 +1,5 @@
 from typing import Optional
+from urllib.parse import quote
 from fastapi import APIRouter, Query, HTTPException, Response
 from fastapi.responses import RedirectResponse, PlainTextResponse
 from ..database import get_db
@@ -13,6 +14,7 @@ from ..services.xtream_service import (
     get_vod_categories,
     get_vod_streams,
     get_short_epg,
+    build_xmltv,
 )
 from ..config import APP_NAME, LOCAL_IP, PORT
 
@@ -99,7 +101,8 @@ async def get_m3u_playlist(
     username: str = Query(...),
     password: str = Query(...),
     type: Optional[str] = Query("m3u_plus"),
-    output: Optional[str] = Query("m3u8")
+    output: Optional[str] = Query("m3u8"),
+    favourites: int = Query(0, description="1 = only your favourite channels"),
 ):
     """
     Generates tailored M3U playlist for Smart TV or any external IPTV client.
@@ -109,16 +112,21 @@ async def get_m3u_playlist(
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     async with get_db() as db:
-        query = "SELECT * FROM channels WHERE is_adult = 0 ORDER BY category ASC, name ASC"
+        where = "is_adult = 0" + (" AND is_favorite = 1" if favourites else "")
+        query = f"SELECT * FROM channels WHERE {where} ORDER BY category ASC, name ASC"
         async with db.execute(query) as cur:
             rows = await cur.fetchall()
 
-    lines = ["#EXTM3U"]
+    def attr(value) -> str:  # a quote inside a name would break the line for players
+        return str(value or "").replace('"', "'")
+
+    guide_url = f"http://{LOCAL_IP}:{PORT}/xmltv.php?username={quote(username)}&password={quote(password)}"
+    lines = [f'#EXTM3U url-tvg="{guide_url}" x-tvg-url="{guide_url}"']  # players load the TV guide by themselves
     for r in rows:
-        tvg_id = r["epg_id"] or ""
-        tvg_name = r["name"]
-        tvg_logo = r["logo"] or ""
-        group_title = r["category"] or "General"
+        tvg_id = attr(r["epg_id"])
+        tvg_name = attr(r["name"])
+        tvg_logo = attr(r["logo"])
+        group_title = attr(r["category"] or "General")
         stream_url = f"http://{LOCAL_IP}:{PORT}/live/{username}/{password}/{r['id']}.m3u8"
         lines.append(f'#EXTINF:-1 tvg-id="{tvg_id}" tvg-name="{tvg_name}" tvg-logo="{tvg_logo}" group-title="{group_title}",{r["name"]}')
         lines.append(stream_url)
@@ -127,7 +135,7 @@ async def get_m3u_playlist(
     return Response(
         content=m3u_content,
         media_type="application/x-mpegurl",
-        headers={"Content-Disposition": 'inline; filename="nexonic_iptv.m3u"'}
+        headers={"Content-Disposition": 'inline; filename="nexonic_tv_server.m3u"'}
     )
 
 @router.get("/live/{username}/{password}/{stream_id}.m3u8")
@@ -162,6 +170,4 @@ async def get_xmltv_epg(username: str = Query(...), password: str = Query(...)):
     if not valid:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    xml_header = f'<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE tv SYSTEM "xmltv.dtd">\n<tv generator-info-name="{APP_NAME}">\n'
-    xml_footer = '</tv>\n'
-    return Response(content=xml_header + xml_footer, media_type="application/xml")
+    return Response(content=await build_xmltv(), media_type="application/xml")
