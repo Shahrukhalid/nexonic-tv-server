@@ -37,24 +37,24 @@ interface SidebarProps {
   onTabChange: (tab: NavItem) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => {
-  const navItems = [
-    { id: 'home', label: 'Home', icon: <Home className="w-5 h-5" /> },
-    { id: 'livetv', label: 'Live TV', icon: <Tv className="w-5 h-5" /> },
-    { id: 'satellite', label: 'Dish & Satellite', icon: <Radio className="w-5 h-5 text-amber-400" /> },
-    { id: 'offline', label: 'Offline & VOD', icon: <HardDrive className="w-5 h-5 text-emerald-400" /> },
-    { id: 'countries', label: 'Countries', icon: <Globe2 className="w-5 h-5" /> },
-    { id: 'categories', label: 'Categories', icon: <Grid className="w-5 h-5" /> },
-    { id: 'series', label: 'TV Series', icon: <Film className="w-5 h-5" /> },
-    { id: 'epg', label: 'TV Guide', icon: <Calendar className="w-5 h-5" /> },
-    { id: 'favorites', label: 'Favorites', icon: <Heart className="w-5 h-5" /> },
-    { id: 'history', label: 'Recently Watched', icon: <History className="w-5 h-5" /> },
-    { id: 'health', label: 'Channel Health', icon: <Activity className="w-5 h-5" /> },
-    { id: 'sources', label: 'Sources & Playlists', icon: <Layers className="w-5 h-5" /> },
-    { id: 'connect-tv', label: 'Connect Smart TV', icon: <Cast className="w-5 h-5" /> },
-    { id: 'settings', label: 'Settings', icon: <Settings className="w-5 h-5" /> },
-  ];
+const navItems: { id: NavItem; label: string; icon: React.ReactNode }[] = [
+  { id: 'home', label: 'Home', icon: <Home className="w-5 h-5" /> },
+  { id: 'livetv', label: 'Live TV', icon: <Tv className="w-5 h-5" /> },
+  { id: 'satellite', label: 'Dish & Satellite', icon: <Radio className="w-5 h-5 text-amber-400" /> },
+  { id: 'offline', label: 'Offline & VOD', icon: <HardDrive className="w-5 h-5 text-emerald-400" /> },
+  { id: 'countries', label: 'Countries', icon: <Globe2 className="w-5 h-5" /> },
+  { id: 'categories', label: 'Categories', icon: <Grid className="w-5 h-5" /> },
+  { id: 'series', label: 'TV Series', icon: <Film className="w-5 h-5" /> },
+  { id: 'epg', label: 'TV Guide', icon: <Calendar className="w-5 h-5" /> },
+  { id: 'favorites', label: 'Favorites', icon: <Heart className="w-5 h-5" /> },
+  { id: 'history', label: 'Recently Watched', icon: <History className="w-5 h-5" /> },
+  { id: 'health', label: 'Channel Health', icon: <Activity className="w-5 h-5" /> },
+  { id: 'sources', label: 'Sources & Playlists', icon: <Layers className="w-5 h-5" /> },
+  { id: 'connect-tv', label: 'Connect Smart TV', icon: <Cast className="w-5 h-5" /> },
+  { id: 'settings', label: 'Settings', icon: <Settings className="w-5 h-5" /> },
+];
 
+export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => {
   return (
     <aside className="w-64 border-r border-nx-border bg-nx-surface/50 backdrop-blur-md flex flex-col justify-between p-4 flex-shrink-0 min-h-[calc(100vh-4rem)]">
       <nav className="space-y-1.5">
@@ -66,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onTabChange }) => 
           return (
             <button
               key={item.id}
-              onClick={() => onTabChange(item.id as NavItem)}
+              onClick={() => onTabChange(item.id)}
               className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 isActive
                   ? 'bg-nx-primary text-white shadow-glow-blue font-semibold'

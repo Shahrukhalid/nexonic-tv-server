@@ -95,7 +95,7 @@ export const VerificationBadge: React.FC<VerificationBadgeProps> = ({
 
       {showDetails && (
         <div className="flex items-center gap-1 text-[11px] text-nx-muted">
-          {responseTimeMs ? <span>{responseTimeMs}ms</span> : null}
+          {responseTimeMs != null ? <span>{responseTimeMs}ms</span> : null}
           {resolution ? <span className="px-1 bg-nx-card rounded border border-nx-border">{resolution}</span> : null}
         </div>
       )}
