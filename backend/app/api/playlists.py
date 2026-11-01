@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Query, Response, HTTPException
 from pydantic import BaseModel
@@ -21,7 +21,7 @@ async def list_playlists():
 
 @router.post("")
 async def create_playlist(playlist: PlaylistCreate):
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
     ids_json = json.dumps(playlist.channel_ids)
     async with get_db() as db:
         cur = await db.execute(

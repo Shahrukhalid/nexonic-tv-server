@@ -1,0 +1,22 @@
+# Nexonic TV Server on a home server or NAS:   docker compose up -d   then open http://localhost:8000
+# The Smart TV login is printed once on first start:   docker compose logs | grep "Smart TV login"
+# To watch on a Smart TV, set NEXONIC_BIND=0.0.0.0 and NEXONIC_LAN_IP=<this computer's address> in .env.
+services:
+  nexonic-tv-server:
+    build: .
+    image: nexonic-tv-server
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NEXONIC_HOST: 0.0.0.0
+      NEXONIC_PORT: "8000"
+      NEXONIC_DATA_DIR: /app/local-data
+    ports:
+      - "${NEXONIC_BIND:-127.0.0.1}:${NEXONIC_PUBLIC_PORT:-8000}:8000"
+    volumes:
+      - nexonic-data:/app/local-data  # database, playlists and logs survive restarts and updates
+    restart: unless-stopped
+
+volumes:
+  nexonic-data:

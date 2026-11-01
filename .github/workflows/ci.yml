@@ -31,6 +31,29 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - run: npx -y npm@11.6.2 install --no-audit --no-fund  # npm 10 crashes resolving vitest 4 peers
+      - run: npx -y npm@11.6.2 ci --no-audit --no-fund  # npm 10 crashes resolving vitest 4 peers
       - run: npm test
       - run: npm run build
+
+  docker:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and start
+        run: docker compose up -d --build --wait --wait-timeout 180
+      - name: Web app and API answer, Smart TV login is printed
+        run: |
+          curl -fsS http://127.0.0.1:8000/api/health
+          curl -fsS http://127.0.0.1:8000/ | grep -q "<div id=\"root\""
+          docker compose logs | grep -q "Smart TV login created"
+      - name: Data survives stopping and starting
+        run: |
+          docker compose down
+          docker compose up -d --wait --wait-timeout 180
+          docker compose exec -T nexonic-tv-server test -s /app/local-data/database/nexonic_iptv.db
+          test "$(docker compose logs | grep -c 'Smart TV login created')" = "0"
+          curl -fsS http://127.0.0.1:8000/api/health
+      - name: Logs
+        if: always()
+        run: docker compose logs --no-color | tail -100

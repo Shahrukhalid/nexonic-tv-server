@@ -11,7 +11,8 @@ from ..services.xtream_service import (
     get_series_categories,
     get_series_streams,
     get_vod_categories,
-    get_vod_streams
+    get_vod_streams,
+    get_short_epg,
 )
 from ..config import APP_NAME, LOCAL_IP, PORT
 
@@ -24,7 +25,8 @@ async def player_api(
     action: Optional[str] = Query(None),
     category_id: Optional[str] = Query(None),
     stream_id: Optional[str] = Query(None),
-    series_id: Optional[str] = Query(None)
+    series_id: Optional[str] = Query(None),
+    limit: Optional[int] = Query(None)
 ):
     """
     Standard Xtream Codes API endpoint used by Smart TV IPTV apps
@@ -87,8 +89,8 @@ async def player_api(
     if action == "get_vod_streams":
         return await get_vod_streams()
 
-    if action == "get_short_epg":
-        return {"epg_listings": []}
+    if action in ("get_short_epg", "get_simple_data_table"):
+        return await get_short_epg(stream_id, limit or 4)
 
     return {"error": f"Unknown action {action}"}
 

@@ -1,7 +1,7 @@
 import gzip
 import io
 from defusedxml import ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Dict, Any
 from ..database import get_db
 
@@ -72,7 +72,7 @@ async def get_now_and_next_program(epg_id: str) -> Dict[str, Any]:
     if not epg_id:
         return {"current": None, "next": None}
 
-    now_iso = datetime.utcnow().isoformat()
+    now_iso = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
 
     async with get_db() as db:
         # Current program: start_time <= now <= end_time
@@ -107,7 +107,7 @@ async def get_timeline_for_channels(channel_epg_ids: List[str]) -> Dict[str, Lis
     if not channel_epg_ids:
         return {}
 
-    now_iso = datetime.utcnow().isoformat()
+    now_iso = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
     placeholders = ",".join("?" for _ in channel_epg_ids)
 
     async with get_db() as db:

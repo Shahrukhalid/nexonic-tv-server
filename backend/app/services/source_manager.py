@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
 from ..database import get_db
 from .playlist_importer import fetch_and_import_m3u
@@ -69,7 +69,7 @@ DEFAULT_PUBLIC_SOURCES = [
 async def seed_default_sources():
     """Populate default sources if none exist."""
     async with get_db() as db:
-        now = datetime.utcnow().isoformat()
+        now = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
         for src in DEFAULT_PUBLIC_SOURCES:
             await db.execute(
                 """
@@ -102,7 +102,7 @@ async def refresh_source(source_id: int) -> Dict[str, Any]:
         inserted, updated = await fetch_and_import_m3u(url, name, source_id=source_id)
         return {"status": "SUCCESS", "inserted": inserted, "updated": updated}
     except Exception as e:
-        now = datetime.utcnow().isoformat()
+        now = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
         async with get_db() as db:
             await db.execute("UPDATE sources SET last_status = ?, last_refreshed_at = ? WHERE id = ?", (f"ERROR: {str(e)[:100]}", now, source_id))
             await db.commit()

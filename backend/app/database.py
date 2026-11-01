@@ -141,7 +141,10 @@ async def init_db():
             "auto_refresh_hours": "0",  # 0 = manual only
         }
         for k, v in defaults.items():
-            await db.execute("INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)", (k, v))
+            cur = await db.execute("INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)", (k, v))
+            if k == "xtream_pass" and cur.rowcount == 1 and not XTREAM_PASS_ENV:
+                # Shown once in the server log (for example `docker compose logs`) so a headless install can log in.
+                print(f"Smart TV login created: user {defaults['xtream_user']} / password {v} (change it in Settings)", flush=True)
         # Environment values always win, so credentials can be rotated without touching the database.
         if XTREAM_USER_ENV:
             await db.execute("UPDATE settings SET value = ? WHERE key = 'xtream_user'", (XTREAM_USER_ENV,))

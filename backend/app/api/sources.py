@@ -1,6 +1,6 @@
 import shutil
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Query
 from ..database import get_db
@@ -28,7 +28,7 @@ async def trigger_auto_discover():
 async def add_source(source: SourceCreate):
     if not is_safe_remote_url(source.url):
         raise HTTPException(status_code=400, detail="Source must be a public http(s) URL")
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
     async with get_db() as db:
         try:
             cur = await db.execute(
@@ -84,13 +84,13 @@ async def upload_playlist_file(
     
     # Save a backup copy locally
     safe_name = Path(file.filename or "playlist.m3u").name
-    save_filename = f"local_{int(datetime.utcnow().timestamp())}_{safe_name}"
+    save_filename = f"local_{int(datetime.now(timezone.utc).replace(tzinfo=None).timestamp())}_{safe_name}"
     save_path = PLAYLISTS_DIR / save_filename
     with open(save_path, "wb") as f:
         f.write(file_bytes)
 
     # Register as source
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
     async with get_db() as db:
         cur = await db.execute(
             """

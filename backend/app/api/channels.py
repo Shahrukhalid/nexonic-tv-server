@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Query, HTTPException, status
 from ..database import get_db
@@ -267,7 +267,7 @@ async def get_watch_history(limit: int = Query(20, ge=1, le=100)):
 
 @router.post("/history/{channel_id}")
 async def record_watch_history(channel_id: int):
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
     async with get_db() as db:
         await db.execute("INSERT INTO history (channel_id, watched_at) VALUES (?, ?)", (channel_id, now))
         await db.commit()

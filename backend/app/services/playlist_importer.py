@@ -1,6 +1,6 @@
 import re
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Dict, Any, Tuple
 from ..database import get_db
@@ -194,7 +194,7 @@ async def save_channels_to_db(parsed_channels: List[Dict[str, Any]], source_id: 
         
     inserted = 0
     updated = 0
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
     
     async with get_db() as db:
         for ch in parsed_channels:

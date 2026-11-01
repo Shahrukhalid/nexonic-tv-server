@@ -1,6 +1,6 @@
 import os
 import mimetypes
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
 from ..database import get_db
@@ -114,7 +114,7 @@ async def stream_offline_file(filename: str, request: Request):
 async def scan_and_register_offline_files():
     """Scans local offline media directory and registers any new files as channels in SQLite."""
     os.makedirs(OFFLINE_MEDIA_DIR, exist_ok=True)
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
     registered = 0
 
     async with get_db() as db:

@@ -31,6 +31,9 @@ PORT = int(os.environ.get("NEXONIC_PORT", "8000"))
 
 def get_local_ip() -> str:
     """LAN address shown to Smart TV apps when the server is shared on the home network."""
+    override = os.environ.get("NEXONIC_LAN_IP", "").strip()
+    if override:  # e.g. in Docker, where the container can't see the computer's own address
+        return override
     if HOST in ("127.0.0.1", "localhost", "::1"):
         return "127.0.0.1"
     try:

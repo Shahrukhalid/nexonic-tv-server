@@ -26,7 +26,7 @@ PORT="${NEXONIC_PORT:-8000}"
 
 mkdir -p "$PROJECT_ROOT/local-data/logs"
 
-echo "Starting Nexonic TV Server server on $HOST:$PORT..."
+echo "Starting Nexonic TV Server on $HOST:$PORT..."
 export PYTHONPATH="$PROJECT_ROOT"
 nohup "$PROJECT_ROOT/backend/.venv/bin/python" -m uvicorn backend.app.main:app --host "$HOST" --port "$PORT" > "$PROJECT_ROOT/local-data/logs/backend.log" 2>&1 &
 BACKEND_PID=$!

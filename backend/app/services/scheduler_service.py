@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 from ..database import get_db, get_setting, set_setting
 from .source_manager import get_all_sources, refresh_source
@@ -129,7 +129,7 @@ class SchedulerService:
                 tasks = [audit_channel(cid) for cid in ch_ids]
                 await asyncio.gather(*tasks, return_exceptions=True)
 
-                self.auto_audit_stats["last_audit_time"] = datetime.utcnow().isoformat()
+                self.auto_audit_stats["last_audit_time"] = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
                 # Yield smoothly to keep system responsive
                 await asyncio.sleep(0.4)
 
@@ -191,7 +191,7 @@ class SchedulerService:
 
                         if rows:
                             ch_ids = [r["id"] for r in rows]
-                            self.last_auto_check = datetime.utcnow().isoformat()
+                            self.last_auto_check = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
                             self.auto_check_running = True
                             try:
                                 await verification_engine.start_batch_verification(ch_ids, concurrency=10)

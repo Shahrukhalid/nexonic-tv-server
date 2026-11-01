@@ -21,8 +21,9 @@ Nexonic TV Server is the desktop and Smart TV companion to [Nexonic IPTV](https:
 - **Real stream checks**: HTTP status, latency, HLS manifest and segment checks, DRM detection and optional `ffprobe` codec and resolution probing. Dead links are flagged, not hidden.
 - **Channel health center**: working, unstable, offline and region-restricted counts, with CSV and JSON exports.
 - **Xtream Codes API and M3U server**: `player_api.php`, `get.php` and `xmltv.php` endpoints, so Smart TV apps can log in to your own computer.
-- **TV guide (EPG)**: XMLTV import with now and next listings.
-- **TV series channels, favourites and watch history**, all stored locally.
+- **TV guide (EPG)**: XMLTV import with now and next listings, also shown inside Smart TV apps.
+- **TV series channels, favourites and watch history**, all stored locally. Your favourites also appear as a
+  **Favourites** group in Smart TV apps, so the remote goes straight to your saved channels.
 - **Offline library**: play video files you put in `local-data/offline_media/`.
 - **Bring your own playlists**: add any M3U URL or upload a file from the Sources page.
 
@@ -52,6 +53,20 @@ bash scripts/start.sh   # starts the server
 ```
 
 Open **http://localhost:8000**. The first start imports the default playlists in the background; use the **Channel Health** page to check streams.
+
+### Quick start with Docker (home server or NAS)
+
+```bash
+git clone https://github.com/Shahrukhalid/nexonic-tv-server.git
+cd nexonic-tv-server
+docker compose up -d
+docker compose logs | grep "Smart TV login"   # the login is printed once on first start
+```
+
+Open **http://localhost:8000**. Your database, playlists and logs are kept in the `nexonic-data` volume, so they
+survive restarts and updates (`git pull && docker compose up -d --build`). To watch on a Smart TV, copy
+`.env.example` to `.env` and set `NEXONIC_BIND=0.0.0.0` and `NEXONIC_LAN_IP` to this computer's address. The image
+builds on Intel and ARM machines (including most NAS boxes) and includes `ffprobe` for stream checks.
 
 To confirm everything works on your network (channel import, live stream checks, Smart TV login and playback relay), run this while the server is running:
 

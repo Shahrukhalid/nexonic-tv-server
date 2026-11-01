@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, List
 from ..database import get_db, get_setting
 import secrets
@@ -22,8 +22,8 @@ async def get_server_info() -> Dict[str, Any]:
         "server_protocol": "http",
         "rtmp_port": "",
         "timezone": "UTC",
-        "time_now": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
-        "timestamp_now": int(datetime.utcnow().timestamp()),
+        "time_now": datetime.now(timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%d %H:%M:%S"),
+        "timestamp_now": int(datetime.now(timezone.utc).replace(tzinfo=None).timestamp()),
         "process": True
     }
 
@@ -42,14 +42,19 @@ async def get_user_info(username: str) -> Dict[str, Any]:
         "allowed_output_formats": ["m3u8", "ts", "rtmp"]
     }
 
+# Fixed category ID of the "Favourites" bouquet, so Smart TV apps keep it after a reload.
+FAVOURITES_CATEGORY_ID = "999999"
+FAVOURITES_CATEGORY_NAME = "Favourites"
+
+
 async def get_live_categories() -> List[Dict[str, Any]]:
-    """Return distinct categories formatted for Xtream Codes."""
+    """Return distinct categories formatted for Xtream Codes, with the Favourites bouquet first."""
     async with get_db() as db:
         query = "SELECT DISTINCT category FROM channels WHERE is_adult = 0 AND category IS NOT NULL ORDER BY category ASC"
         async with db.execute(query) as cur:
             rows = await cur.fetchall()
 
-    categories = []
+    categories = [{"category_id": FAVOURITES_CATEGORY_ID, "category_name": FAVOURITES_CATEGORY_NAME, "parent_id": 0}]
     for idx, r in enumerate(rows, start=1):
         cat_name = r["category"]
         categories.append({
@@ -65,12 +70,15 @@ async def get_live_streams(category_id: str | None = None) -> List[Dict[str, Any
     cat_map = {c["category_id"]: c["category_name"] for c in cats}
     name_to_id = {c["category_name"]: c["category_id"] for c in cats}
 
-    filter_cat_name = cat_map.get(category_id) if category_id else None
+    favourites = category_id == FAVOURITES_CATEGORY_ID
+    filter_cat_name = None if favourites else (cat_map.get(category_id) if category_id else None)
 
     async with get_db() as db:
         where_clauses = ["is_adult = 0"]
         params = []
-        if filter_cat_name:
+        if favourites:
+            where_clauses.append("is_favorite = 1")
+        elif filter_cat_name:
             where_clauses.append("category = ?")
             params.append(filter_cat_name)
 
@@ -83,7 +91,7 @@ async def get_live_streams(category_id: str | None = None) -> List[Dict[str, Any
     streams = []
     for r in rows:
         cid = r["id"]
-        cat_id = name_to_id.get(r["category"], "1")
+        cat_id = FAVOURITES_CATEGORY_ID if favourites else name_to_id.get(r["category"], "1")
         streams.append({
             "num": cid,
             "name": r["name"],
@@ -158,3 +166,47 @@ async def get_vod_streams() -> List[Dict[str, Any]]:
             "direct_source": r["stream_url"]
         })
     return vod_list
+
+
+async def get_short_epg(stream_id: str | None, limit: int = 4) -> Dict[str, Any]:
+    """Now and next programmes of one channel, in the Xtream Codes format (titles and descriptions in base64)."""
+    import base64
+
+    if not stream_id or not str(stream_id).isdigit():
+        return {"epg_listings": []}
+    limit = max(1, min(int(limit or 4), 20))
+    now_iso = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
+    async with get_db() as db:
+        async with db.execute("SELECT epg_id FROM channels WHERE id = ? AND is_adult = 0", (int(stream_id),)) as cur:
+            ch = await cur.fetchone()
+        if not ch or not ch["epg_id"]:
+            return {"epg_listings": []}
+        async with db.execute(
+            "SELECT * FROM epg_programs WHERE channel_epg_id = ? AND end_time > ? ORDER BY start_time ASC LIMIT ?",
+            (ch["epg_id"], now_iso, limit),
+        ) as cur:
+            rows = await cur.fetchall()
+
+    def b64(text: str | None) -> str:
+        return base64.b64encode((text or "").encode()).decode()
+
+    listings = []
+    for r in rows:
+        try:
+            start = datetime.fromisoformat(r["start_time"]).replace(tzinfo=timezone.utc)
+            end = datetime.fromisoformat(r["end_time"]).replace(tzinfo=timezone.utc)
+        except ValueError:
+            continue
+        listings.append({
+            "id": str(r["id"]),
+            "epg_id": ch["epg_id"],
+            "channel_id": ch["epg_id"],
+            "title": b64(r["title"]),
+            "description": b64(r["description"]),
+            "lang": "",
+            "start": start.strftime("%Y-%m-%d %H:%M:%S"),
+            "end": end.strftime("%Y-%m-%d %H:%M:%S"),
+            "start_timestamp": str(int(start.timestamp())),
+            "stop_timestamp": str(int(end.timestamp())),
+        })
+    return {"epg_listings": listings}

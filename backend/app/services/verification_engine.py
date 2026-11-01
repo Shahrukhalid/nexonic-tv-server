@@ -3,7 +3,7 @@ import time
 import json
 import shutil
 import urllib.parse
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 import httpx
 
@@ -223,7 +223,7 @@ class VerificationEngine:
 
         stream_url = row["stream_url"]
         res = await self.verify_single_stream(stream_url, check_ffprobe=check_ffprobe, timeout_sec=timeout_sec)
-        now = datetime.utcnow().isoformat()
+        now = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()
 
         new_stream_url = stream_url
         new_fallback_urls = row["fallback_urls"] or "[]"
